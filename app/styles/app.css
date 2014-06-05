@@ -1,0 +1,11 @@
+html, body {
+  margin: 20px;
+}
+
+.ember-drag-list {
+   position: relative;
+}
+
+.ember-drag-list .dragged {
+  position: absolute;
+}
