@@ -86,7 +86,7 @@ export default Ember.Component.extend({
     var ul = this.$();
     if (ul) {
       if (addCount > 0) {
-        // render in a sane way
+        // don't naively re-render, instead render and insert
         this.rerender();
       }
       applySortable(ul, this, 'itemDragged');
