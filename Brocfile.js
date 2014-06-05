@@ -30,6 +30,6 @@ app.import('vendor/ic-ajax/dist/named-amd/main.js', {
   ]
 });
 
-app.import('vendor/html5sortable/jquery.sortable.js');
+app.import('vendor/html5sortable/dist/html.sortable.0.1.2.js');
 
 module.exports = app.toTree();

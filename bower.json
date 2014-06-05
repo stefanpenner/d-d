@@ -15,6 +15,6 @@
     "ember-qunit-notifications": "^0.0.1",
     "ember-cli-test-loader": "rjackson/ember-cli-test-loader#0.0.2",
     "jquery-sortable": "~0.9.12",
-    "html5sortable": "*"
+    "html5sortable": "voidberg/html5sortable"
   }
 }
