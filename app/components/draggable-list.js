@@ -1,7 +1,11 @@
 function applySortable(el, target, method) {
   if (el) {
     el.sortable().bind('sortupdate', function(e, ui) {
-      Ember.run(target, method, ui.item.text(), ui.item.index());
+      var newIndex = ui.item.index();
+      var id = ui.item.data('id');
+      var context = target.get('values').findProperty('id', id);
+
+      Ember.run(target, method, context, newIndex);
     });
   }
 }
@@ -20,9 +24,18 @@ export default Ember.Component.extend({
 
   render: function (buffer) {
     var values = this.get('values');
+    var template = this.get('template');
+    var view = this;
+
     if (values) {
       values.forEach(function (value) {
-        buffer.push('<li>'+value+'</li>');
+        buffer.push(template(value, {
+          data: {
+            buffer: buffer,
+            view: view,
+            keywords: view.templateData.keywords
+          }
+        }));
       });
     }
   },
@@ -37,6 +50,7 @@ export default Ember.Component.extend({
 
   itemDragged: function (value, index) {
     var values = this.get('values');
+
     this.updateDisabled = true;
     values.removeObject(value);
     values.insertAt(index, value);
@@ -60,6 +74,7 @@ export default Ember.Component.extend({
   arrayWillChange: function (values, start, removeCount /*, addCount */) {
     if (this.updateDisabled) return;
     var ul = this.$();
+    // remove it on the UI item
     if (ul) {
       ul.sortable('destroy');
       ul.find('li').slice(start, start+removeCount).remove();
@@ -70,9 +85,10 @@ export default Ember.Component.extend({
     if (this.updateDisabled) return;
     var ul = this.$();
     if (ul) {
-      values.slice(start, start+addCount).forEach(function (value) {
-        $('<li></li>').text(value).appendTo(ul);
-      });
+      if (addCount > 0) {
+        // render in a sane way
+        this.rerender();
+      }
       applySortable(ul, this, 'itemDragged');
     }
   }

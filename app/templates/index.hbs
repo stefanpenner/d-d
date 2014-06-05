@@ -1,5 +1,9 @@
-{{#each fruits itemView="foo"}}
-  {{this}}
+{{#each fruit}}
+  {{name}}
 {{/each}}
 
-{{draggable-list values=fruits}}
+{{#draggable-list values=fruit}}
+  <li {{bind-attr data-id=id}}>
+    {{name}} - <button {{action "save" this}}> save</button>
+ </li>
+{{/draggable-list}}
