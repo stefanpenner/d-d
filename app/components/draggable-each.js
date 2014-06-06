@@ -39,20 +39,21 @@ export default Ember.Component.extend({
   },
 
   didInsertElement: function () {
-    applySortable(this.$(), this, 'itemDragged');
+    applySortable(this.$(), this, 'itemWasDragged');
   },
 
   willDestroyElement: function () {
     destroySortable(this.$());
   },
 
-  itemDragged: function (oldIndex, index) {
+  itemWasDragged: function (oldIndex, newIndex) {
     var values = this.get('values');
 
     this.updateDisabled = true;
     var object = values.objectAt(oldIndex);
     values.removeAt(oldIndex);
-    values.insertAt(index, object);
+    values.insertAt(newIndex, object);
+    this.sendAction('itemWasMoved', object, oldIndex, newIndex);
     this.updateDisabled = false;
   },
 
