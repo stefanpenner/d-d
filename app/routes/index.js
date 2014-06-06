@@ -1,20 +1,20 @@
 export default  Ember.Route.extend({
   model: function() {
-    var model = {
-      fruit: [
-        { id: 1, name: 'apple' },
-        { id: 2, name: 'pear'  },
-        { id: 3, name: 'banana'},
-        { id: 4, name: 'kiwi'  }
-      ]
-    };
+    var model = [
+      { id: 1, name: 'apple' },
+      { id: 2, name: 'pear'  },
+      { id: 3, name: 'banana'},
+      { id: 4, name: 'kiwi'  }
+    ];
 
+    // similate some stuff
     setTimeout(function () {
-      model.fruit.pushObject({
+      model.pushObject({
         id: 5,
         name: 'orange'
       });
-      model.fruit.removeObject(model.fruit[2]);
+
+      model.removeAt(2);
     }, 2000);
 
     return model;

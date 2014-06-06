@@ -18,7 +18,6 @@ function destroySortable(el) {
 export default Ember.Component.extend({
   values: undefined,
 
-  tagName: 'ul',
   classNames: ['ember-drag-list'],
 
   render: function (buffer) {
@@ -74,11 +73,14 @@ export default Ember.Component.extend({
   arrayWillChange: function (values, start, removeCount /*, addCount */) {
     if (this.updateDisabled) return;
     var ul = this.$();
-    // remove it on the UI item
     if (ul) {
-      ul.find('li').slice(start, start+removeCount).remove();
+      this.$sortables().slice(start, start+removeCount).remove();
     }
   }.on('values'),
+
+  $sortables: function() {
+    return this.$('>');
+  },
 
   _reload: function() {
     var ul = this.$();
