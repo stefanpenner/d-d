@@ -9,3 +9,16 @@ html, body {
 .ember-drag-list .dragged {
   position: absolute;
 }
+
+.ember-drag-list.grid {
+  width: 640px;
+}
+
+.ember-drag-list.grid > * {
+  line-height: 80px;
+  float: left;
+  width: 200px;
+  height: 200px;
+  text-align: center;
+  border: 1px dashed gray;
+}

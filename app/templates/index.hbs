@@ -3,8 +3,8 @@
   {{id}} - {{name}}
 {{/each}}
 <hr>
-{{#draggable-list values=this tagName='ul'}}
-  <li>
+{{#draggable-list values=this tagName='div' classNames='grid'}}
+  <div>
     {{id}} - {{name}} - <button {{action "save" this}}> save</button>
-  </li>
+  </div>
 {{/draggable-list}}
