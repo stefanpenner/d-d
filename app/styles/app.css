@@ -2,23 +2,14 @@ html, body {
   margin: 20px;
 }
 
-.ember-drag-list {
-   position: relative;
-}
-
-.ember-drag-list .dragged {
-  position: absolute;
-}
-
-.ember-drag-list.grid {
-  width: 640px;
-}
-
-.ember-drag-list.grid > * {
-  line-height: 80px;
-  float: left;
-  width: 200px;
-  height: 200px;
-  text-align: center;
+.sortable-placeholder {
+  display: block;
+  height: 0.8em;
+  width: 250px;
   border: 1px dashed gray;
+}
+
+.draggable-item, .sortable-placeholder{
+  float: left;
+  width: 250px;
 }

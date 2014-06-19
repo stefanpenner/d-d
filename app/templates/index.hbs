@@ -1,10 +1,15 @@
-<h1>no sorted</h1>
 {{#each}}
-  {{id}} - {{name}}
+  <span>{{id}} - {{name}}</span>
 {{/each}}
 <hr>
-{{#draggable-each values=this tagName='div' classNames='grid' itemWasMoved="itemWasMoved"}}
-  <div>
-    {{id}} - {{name}} - <button {{action "save" this}}> save</button>
-  </div>
+{{#draggable-each values=this}}
+  {{#with this}}
+    <div class="draggable-item">
+      {{apple-pie name=name}}
+      {{#pumpkin-pie}}
+        PUMKIN PIE {{id}} : {{name}}
+      {{/pumpkin-pie}}
+    </div>
+  {{/with}}
 {{/draggable-each}}
+

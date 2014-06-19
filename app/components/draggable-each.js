@@ -1,3 +1,5 @@
+import Ember from 'ember';
+
 function applySortable(el, target, method) {
   if (el) {
     el.sortable().bind('sortupdate', function(e, ui) {
@@ -15,6 +17,12 @@ function destroySortable(el) {
   }
 }
 
+var get = Ember.get;
+
+document.ontouchmove = function(event){
+    event.preventDefault();
+};
+
 export default Ember.Component.extend({
   values: undefined,
 
@@ -22,24 +30,40 @@ export default Ember.Component.extend({
 
   render: function (buffer) {
     var values = this.get('values');
-    var template = this.get('template');
     var view = this;
 
     if (values) {
       values.forEach(function (value) {
-        buffer.push(template(value, {
-          data: {
-            buffer: buffer,
-            view: view,
-            keywords: view.templateData.keywords
-          }
-        }));
+        view._renderEntry(value, buffer);
       });
+    }
+  },
+
+  _renderEntry: function(context, buffer) {
+    var template = get(this, 'template');
+
+    if (template) {
+      var keywords = this.cloneKeywords();
+      var output;
+
+      var data = {
+        view: this,
+        buffer: buffer,
+        isRenderData: true,
+        keywords: keywords,
+        insideGroup: get(this, 'templateData.insideGroup')
+      };
+
+      data.keywords.controller = context;
+      output = template(context, { data: data });
+
+      if (output !== undefined) { buffer.push(output); }
     }
   },
 
   didInsertElement: function () {
     applySortable(this.$(), this, 'itemWasDragged');
+
   },
 
   willDestroyElement: function () {
@@ -72,7 +96,7 @@ export default Ember.Component.extend({
   }.observes('values').on('init'),
 
   arrayWillChange: function (values, start, removeCount /*, addCount */) {
-    if (this.updateDisabled) return;
+    if (this.updateDisabled) { return; }
     var ul = this.$();
     if (ul) {
       this.$sortables().slice(start, start+removeCount).remove();
@@ -86,12 +110,12 @@ export default Ember.Component.extend({
   _reload: function() {
     var ul = this.$();
     if (ul) {
-      ul.sortable('reload');
+      //ul.sortable('reload');
     }
   },
 
   arrayDidChange: function (values, start, removeCount, addCount) {
-    if (this.updateDisabled) return;
+    if (this.updateDisabled) { return; }
     var ul = this.$();
     if (ul) {
       if (addCount > 0) {
