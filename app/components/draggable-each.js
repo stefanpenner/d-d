@@ -1,12 +1,22 @@
 import Ember from 'ember';
 
-function applySortable(el, target, method) {
-  if (el) {
-    el.sortable().bind('sortupdate', function(e, ui) {
-      var newIndex = ui.item.index();
-      var oldIndex = ui.oldindex;
+function index(element, selector) {
+  return element.parent().children(selector).index(element);
+}
 
-      Ember.run(target, method, oldIndex, newIndex);
+function applySortable(el, target, method, itemSelector) {
+  if (el) {
+    el.sortable({
+      items: itemSelector,
+      start: function(e, ui) {
+        ui.item.data('dragon-drop-old-index', index(ui.item, itemSelector));
+      },
+      update: function(e, ui) {
+        var newIndex = index(ui.item, itemSelector);
+        var oldIndex = ui.item.data('dragon-drop-old-index');
+
+        Ember.run(target, method, oldIndex, newIndex);
+      }
     });
   }
 }
@@ -19,13 +29,9 @@ function destroySortable(el) {
 
 var get = Ember.get;
 
-document.ontouchmove = function(event){
-    event.preventDefault();
-};
-
 export default Ember.Component.extend({
   values: undefined,
-
+  itemSelector: '.draggable-item',
   classNames: ['ember-drag-list'],
 
   render: function (buffer) {
@@ -57,13 +63,14 @@ export default Ember.Component.extend({
       data.keywords.controller = context;
       output = template(context, { data: data });
 
-      if (output !== undefined) { buffer.push(output); }
+      if (output !== undefined) {
+        buffer.push(output);
+      }
     }
   },
 
   didInsertElement: function () {
-    applySortable(this.$(), this, 'itemWasDragged');
-
+    applySortable(this.$(), this, 'itemWasDragged', this.get('itemSelector'));
   },
 
   willDestroyElement: function () {
@@ -104,13 +111,13 @@ export default Ember.Component.extend({
   }.on('values'),
 
   $sortables: function() {
-    return this.$('>');
+    return this.$('.draggable-item');
   },
 
   _reload: function() {
-    var ul = this.$();
-    if (ul) {
-      //ul.sortable('reload');
+    var element = this.$();
+    if (element) {
+      element.sortable('refresh');
     }
   },
 
