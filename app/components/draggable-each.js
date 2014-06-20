@@ -1,5 +1,7 @@
 import Ember from 'ember';
 
+var a_slice = Array.prototype.slice;
+
 function index(element, selector) {
   return element.parent().children(selector).index(element);
 }
@@ -36,23 +38,19 @@ function refreshSortable(element) {
 
 var get = Ember.get;
 
-export default Ember.Component.extend({
-  values: undefined,
-  itemSelector: '.draggable-item',
-  handleSelector: '.draggable-item-handle',
+export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
   classNames: ['ember-drag-list'],
-
-  render: function (buffer) {
-    var values = this.get('values');
-    var view = this;
-
-    if (values) {
-      values.forEach(function (value) {
-        view._renderEntry(value, buffer);
-      });
-    }
+  content: Ember.computed.oneWay('context'),
+  handleSelector: '.draggable-item-handle',
+  itemSelector: '.draggable-item',
+  target: Ember.computed.oneWay('controller'),
+  init: function() {
+    this.set('itemViewClass', Ember.View.extend({
+      context: Ember.computed.oneWay('content'),
+      template: this.get('template')
+    }));
+    this._super.apply(this, arguments);
   },
-
   _renderEntry: function(context, buffer) {
     var template = get(this, 'template');
 
@@ -84,57 +82,35 @@ export default Ember.Component.extend({
   willDestroyElement: function () {
     destroySortable(this.$());
   },
+  // lifted from Ember.Compontent
+  sendAction: function(action) {
+    var actionName;
+    var contexts = a_slice.call(arguments, 1);
+
+    // Send the default action
+    if (action === undefined) {
+      actionName = get(this, 'action');
+    } else {
+      actionName = get(this, action);
+    }
+
+    // If no action name for that action could be found, just abort.
+    if (actionName === undefined) { return; }
+
+    this.triggerAction({
+      action: actionName,
+      actionContext: contexts
+    });
+  },
 
   itemWasDragged: function (oldIndex, newIndex) {
-    var values = this.get('values');
+    var content = this.get('content');
 
     this.updateDisabled = true;
-    var object = values.objectAt(oldIndex);
-    values.removeAt(oldIndex);
-    values.insertAt(newIndex, object);
+    var object = content.objectAt(oldIndex);
+    content.removeAt(oldIndex);
+    content.insertAt(newIndex, object);
     this.sendAction('itemWasMoved', object, oldIndex, newIndex);
     this.updateDisabled = false;
-  },
-
-  valuesWillChange: function () {
-    var values = this.get('values');
-    if (values) {
-      values.removeArrayObserver(this);
-    }
-  }.observesBefore('values'),
-
-  valuesDidChange: function () {
-    var values = this.get('values');
-    if (values) {
-      values.addArrayObserver(this);
-    }
-  }.observes('values').on('init'),
-
-  arrayWillChange: function (values, start, removeCount /*, addCount */) {
-    if (this.updateDisabled) { return; }
-    var ul = this.$();
-    if (ul) {
-      this.$sortables().slice(start, start+removeCount).remove();
-    }
-  }.on('values'),
-
-  $sortables: function() {
-    return this.$('.draggable-item');
-  },
-
-  _reload: function() {
-    refreshSortable(this.$());
-  },
-
-  arrayDidChange: function (values, start, removeCount, addCount) {
-    if (this.updateDisabled) { return; }
-    var ul = this.$();
-    if (ul) {
-      if (addCount > 0) {
-        // don't naively re-render, instead render and insert
-        this.rerender();
-      }
-      Ember.run.schedule('afterRender', this, this._reload);
-    }
   }
 });
