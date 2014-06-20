@@ -45,11 +45,22 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
   itemSelector: '.draggable-item',
   target: Ember.computed.oneWay('controller'),
   init: function() {
-    this.set('itemViewClass', Ember.View.extend({
+
+    var itemView = this.get('itemView');
+    var ItemViewClass;
+
+    if (itemView) {
+      ItemViewClass = this.container.lookupFactory('view:' + itemView);
+    } else {
+      ItemViewClass = this.get('itemViewClass');
+    }
+
+    this.set('itemViewClass', ItemViewClass.extend({
       context: Ember.computed.oneWay('content'),
       template: this.get('template'),
-      classNames: 'draggable-item'
+      classNames: ['draggable-item']
     }));
+
     this._super.apply(this, arguments);
   },
   _renderEntry: function(context, buffer) {
