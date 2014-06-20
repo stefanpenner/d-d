@@ -16,7 +16,7 @@ var app = new EmberApp();
 // modules that you would like to import into your application
 // please specify an object with the list of modules as keys
 // along with the exports of each module as its value.
-// app.import('vendor/html5sortable/dist/html.sortable.0.1.2.js');
 app.import('vendor/jquery-ui-sortable/jquery-ui-sortable.js');
 app.import('vendor/jquery-ui-touch-punch/jquery.ui.touch-punch.js');
+
 module.exports = app.toTree();
