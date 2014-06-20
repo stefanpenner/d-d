@@ -13,3 +13,10 @@ html, body {
   float: left;
   width: 250px;
 }
+
+.draggable-item-handle {
+  display: block;
+  background: red;
+  width: 50px;
+  height: 50px;
+}

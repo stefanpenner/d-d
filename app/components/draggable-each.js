@@ -4,10 +4,11 @@ function index(element, selector) {
   return element.parent().children(selector).index(element);
 }
 
-function applySortable(el, target, method, itemSelector) {
+function applySortable(el, target, method, itemSelector, handleSelector) {
   if (el) {
     el.sortable({
       items: itemSelector,
+      handle: handleSelector,
       start: function(e, ui) {
         ui.item.data('dragon-drop-old-index', index(ui.item, itemSelector));
       },
@@ -32,6 +33,7 @@ var get = Ember.get;
 export default Ember.Component.extend({
   values: undefined,
   itemSelector: '.draggable-item',
+  handleSelector: '.draggable-item-handle',
   classNames: ['ember-drag-list'],
 
   render: function (buffer) {
@@ -70,7 +72,7 @@ export default Ember.Component.extend({
   },
 
   didInsertElement: function () {
-    applySortable(this.$(), this, 'itemWasDragged', this.get('itemSelector'));
+    applySortable(this.$(), this, 'itemWasDragged', this.get('itemSelector'), this.get('handleSelector'));
   },
 
   willDestroyElement: function () {
