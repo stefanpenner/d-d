@@ -4,12 +4,10 @@
 <hr>
 {{length}}
 {{#draggable-each itemWasMoved="itemWasMoved"}}
-  <div class="draggable-item">
-    <div class="draggable-item-handle">X</div>
-    {{apple-pie name=name}}
-    {{#pumpkin-pie}}
-      PUMKIN PIE {{id}} : {{name}}
-    {{/pumpkin-pie}}
-  </div>
+  <div class="draggable-item-handle">X</div>
+  {{apple-pie name=name}}
+  {{#pumpkin-pie}}
+    PUMKIN PIE {{id}} : {{name}}
+  {{/pumpkin-pie}}
 {{/draggable-each}}
 

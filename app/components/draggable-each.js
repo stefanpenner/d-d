@@ -29,12 +29,12 @@ function destroySortable(element) {
     element.sortable('destroy');
   }
 }
+
 function refreshSortable(element) {
   if (element) {
     element.sortable('refresh');
   }
 }
-
 
 var get = Ember.get;
 
@@ -47,7 +47,8 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
   init: function() {
     this.set('itemViewClass', Ember.View.extend({
       context: Ember.computed.oneWay('content'),
-      template: this.get('template')
+      template: this.get('template'),
+      classNames: 'draggable-item'
     }));
     this._super.apply(this, arguments);
   },
