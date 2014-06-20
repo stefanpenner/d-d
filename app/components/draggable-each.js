@@ -22,11 +22,17 @@ function applySortable(el, target, method, itemSelector, handleSelector) {
   }
 }
 
-function destroySortable(el) {
-  if (el) {
-    el.sortable('destroy');
+function destroySortable(element) {
+  if (element) {
+    element.sortable('destroy');
   }
 }
+function refreshSortable(element) {
+  if (element) {
+    element.sortable('refresh');
+  }
+}
+
 
 var get = Ember.get;
 
@@ -117,10 +123,7 @@ export default Ember.Component.extend({
   },
 
   _reload: function() {
-    var element = this.$();
-    if (element) {
-      element.sortable('refresh');
-    }
+    refreshSortable(this.$());
   },
 
   arrayDidChange: function (values, start, removeCount, addCount) {
