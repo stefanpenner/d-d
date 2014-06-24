@@ -63,29 +63,6 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
 
     this._super.apply(this, arguments);
   },
-  _renderEntry: function(context, buffer) {
-    var template = get(this, 'template');
-
-    if (template) {
-      var keywords = this.cloneKeywords();
-      var output;
-
-      var data = {
-        view: this,
-        buffer: buffer,
-        isRenderData: true,
-        keywords: keywords,
-        insideGroup: get(this, 'templateData.insideGroup')
-      };
-
-      data.keywords.controller = context;
-      output = template(context, { data: data });
-
-      if (output !== undefined) {
-        buffer.push(output);
-      }
-    }
-  },
 
   didInsertElement: function () {
     applySortable(this.$(), this, 'itemWasDragged', this.get('itemSelector'), this.get('handleSelector'));
