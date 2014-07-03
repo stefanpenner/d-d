@@ -91,9 +91,10 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
 
     this.updateDisabled = true;
     var object = content.objectAt(oldIndex);
+    var entry = object.isController ? object.get('content') : object;
     content.removeAt(oldIndex);
-    content.insertAt(newIndex, object);
-    this.sendAction('itemWasMoved', object, oldIndex, newIndex);
+    content.insertAt(newIndex, entry);
+    this.sendAction('itemWasMoved', entry, oldIndex, newIndex);
     this.updateDisabled = false;
   }
 });
