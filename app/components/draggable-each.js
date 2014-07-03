@@ -30,12 +30,6 @@ function destroySortable(element) {
   }
 }
 
-function refreshSortable(element) {
-  if (element) {
-    element.sortable('refresh');
-  }
-}
-
 var get = Ember.get;
 
 export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
