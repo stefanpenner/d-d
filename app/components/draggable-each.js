@@ -24,7 +24,9 @@ function applySortable(el, target, method, itemSelector, handleSelector, connect
         var source = ui.item.__source__;
 
         if (ui.item.closest('.ember-drag-list').attr('id') === target.get('elementId')) {
-          Ember.run(target, method, oldIndex, newIndex, source);
+          Ember.run(function() {
+            target[method](oldIndex, newIndex, source);
+          });
         }
       },
       receive: function (e, ui) {
@@ -32,7 +34,9 @@ function applySortable(el, target, method, itemSelector, handleSelector, connect
         var oldIndex = ui.item.data('dragon-drop-old-index');
         var source = ui.item.__source__;
 
-        Ember.run(target, method, oldIndex, newIndex, source);
+        Ember.run(function() {
+          target.viewRecieved(Ember.View.views[ui.item.attr('id')], source);
+        });
       }
     });
   }
@@ -100,6 +104,20 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
     });
   },
 
+  viewRecieved: function(view, source) {
+    view.set('parentView', this);
+  },
+
+  arrayWillChange: function() {
+    if (this.updateDisabled) { return ;}
+    this._super.apply(this, arguments);
+  },
+
+  arrayDidChange: function() {
+    if (this.updateDisabled) { return ;}
+    this._super.apply(this, arguments);
+  },
+
   itemWasDragged: function (oldIndex, newIndex, source) {
     var sourceList = source.get('context');
     var targetList = this.get('context');
@@ -110,10 +128,16 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
 
     var entry = object.isController ? object.get('content') : object;
 
+    var view = source._childViews.splice(oldIndex, 1)[0];
+
+    this._childViews.splice(newIndex, 0,  view);
+
+    source.updateDisabled = true;
     sourceList.removeAt(oldIndex);
     targetList.insertAt(newIndex, entry);
+    source.updateDisabled = false;
 
-    this.sendAction('itemWasMoved', entry, oldIndex, newIndex);
+    this.sendAction('itemWasMoved', entry, oldIndex, newIndex, sourceList);
 
     this.updateDisabled = false;
   }

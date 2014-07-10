@@ -4,15 +4,16 @@
   <div class="draggable-item-handle">X</div>
   {{apple-pie name=name}}
   {{#pumpkin-pie}}
-    PUMKIN PIE {{id}} : {{name}}
+    PUMKIN PIE {{id}} : {{name}} - {{view.parentView}}
   {{/pumpkin-pie}}
 {{/draggable-each}}
 <hr />
+
 {{#draggable-each context=listb itemWasMoved="itemWasMoved" itemView="apple" connectWith=".ember-drag-list"}}
   <div class="draggable-item-handle">X</div>
   {{apple-pie name=name}}
   {{#pumpkin-pie}}
-    PUMKIN PIE {{id}} : {{name}}
+  PUMKIN PIE {{id}} : {{name}} – {{view.parentView}}
   {{/pumpkin-pie}}
 {{/draggable-each}}
 </div>
