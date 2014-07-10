@@ -36,8 +36,8 @@ function applySortable(el, target, method, itemSelector, handleSelector, connect
 
     options.connectWith = connectWith || false;
 
-    if (itemSelector)   { options.itemSelector   = itemSelector;   }
-    if (handleSelector) { options.handleSelector = handleSelector; }
+    if (itemSelector)   { options.item   = itemSelector;   }
+    if (handleSelector) { options.handle = handleSelector; }
 
     el.sortable(options);
   }
