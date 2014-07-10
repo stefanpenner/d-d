@@ -3,8 +3,9 @@
 {{#draggable-each context=lista itemWasMoved="itemWasMoved" itemView="apple" connectWith=".ember-drag-list"}}
   <div class="draggable-item-handle">X</div>
   {{apple-pie name=name}}
+  parentView: {{view.parentView.elementId}}
   {{#pumpkin-pie}}
-    PUMKIN PIE {{id}} : {{name}} - {{view.parentView}}
+  {{id}} : {{name}} – parentView: {{view.parentView.elementId}}
   {{/pumpkin-pie}}
 {{/draggable-each}}
 <hr />
@@ -12,11 +13,13 @@
 {{#draggable-each context=listb itemWasMoved="itemWasMoved" itemView="apple" connectWith=".ember-drag-list"}}
   <div class="draggable-item-handle">X</div>
   {{apple-pie name=name}}
+  parentView: {{view.parentView.elementId}}
   {{#pumpkin-pie}}
-  PUMKIN PIE {{id}} : {{name}} – {{view.parentView}}
+  {{id}} : {{name}} – parentView: {{view.parentView.elementId}}
   {{/pumpkin-pie}}
 {{/draggable-each}}
 </div>
+
 <div style="float: left;width: 300px;">
 <ul>
   {{#each lista}}

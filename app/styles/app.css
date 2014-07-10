@@ -14,6 +14,13 @@ html, body {
   width: 250px;
 }
 
+.draggable-item {
+  overflow: hidden;
+  height: 100px;
+  margin: 0.1em;
+  background: #eee;
+}
+
 .draggable-item-handle {
   display: block;
   background: red;
@@ -24,3 +31,4 @@ html, body {
 .ember-drag-list {
   overflow: hidden;
 }
+

@@ -50,7 +50,7 @@ export default  Ember.Route.extend({
       });
 
       model.removeAt(2);
-    }, 2000);
+    }, 1000);
 
     return {
       lista: model,
