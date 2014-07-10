@@ -1,6 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.Controller.extend({
+  lists: [1,2],
   actions: {
     save: function(model) {
       window.alert('did save: ' + model.name);

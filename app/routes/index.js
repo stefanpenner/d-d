@@ -53,8 +53,13 @@ export default  Ember.Route.extend({
     }, 1000);
 
     return {
-      lista: model,
-      listb: model2
+      lists: [{
+        id: 1,
+        list: model
+      }, {
+        id: 2,
+        list: model2
+      }]
     };
   }
 });

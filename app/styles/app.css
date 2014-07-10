@@ -11,14 +11,23 @@ html, body {
 
 .draggable-item, .sortable-placeholder{
   float: left;
-  width: 250px;
+}
+
+.inner-list-item {
+  height: 150px;
+  width : 240px;
+  margin: 0 auto;
+  overflow: hidden;
 }
 
 .draggable-item {
-  overflow: hidden;
-  height: 150px;
   margin: 0.1em;
-  background: #eee;
+  border-radius: 5px;
+  border: 3px dashed transparent;
+}
+
+.draggable-item:hover {
+  border: 3px dashed steelblue;
 }
 
 .draggable-item-handle {
@@ -30,5 +39,7 @@ html, body {
 
 .ember-drag-list {
   overflow: hidden;
+  border: 1px dotted gray;
+  border-radius: 5px;
+  margin: 1em;
 }
-

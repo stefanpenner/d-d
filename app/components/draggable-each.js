@@ -8,11 +8,7 @@ function index(element, selector) {
 
 function applySortable(el, target, method, itemSelector, handleSelector, connectWith) {
   if (el) {
-    el.sortable({
-      items: itemSelector,
-      handle: handleSelector,
-      connectWith: connectWith,
-
+    var options = {
       start: function(e, ui) {
         ui.item.data('dragon-drop-old-index', index(ui.item, itemSelector));
         ui.item.__source__ = target;
@@ -36,7 +32,14 @@ function applySortable(el, target, method, itemSelector, handleSelector, connect
           target.viewReceived(Ember.View.views[ui.item.attr('id')], source);
         });
       }
-    });
+    };
+
+    options.connectWith = connectWith || false;
+
+    if (itemSelector)   { options.itemSelector   = itemSelector;   }
+    if (handleSelector) { options.handleSelector = handleSelector; }
+
+    el.sortable(options);
   }
 }
 
@@ -51,11 +54,10 @@ var get = Ember.get;
 export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
   classNames: ['ember-drag-list'],
   content: Ember.computed.oneWay('context'),
-  handleSelector: '.draggable-item-handle',
+  handleSelector: null,
   itemSelector: '.draggable-item',
   target: Ember.computed.oneWay('controller'),
   init: function() {
-
     var itemView = this.get('itemView');
     var ItemViewClass;
 
@@ -122,11 +124,11 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
 
     this.updateDisabled = true;
 
-    try {
-      var object = sourceList.objectAt(oldIndex);
-      var entry = object.isController ? object.get('content') : object;
-      var view = source._childViews.splice(oldIndex, 1)[0];
+    var object = sourceList.objectAt(oldIndex);
+    var entry = object.isController ? object.get('content') : object;
+    var view = source._childViews.splice(oldIndex, 1)[0];
 
+    try {
       this._childViews.splice(newIndex, 0,  view);
 
       source.updateDisabled = true;
@@ -137,6 +139,7 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
       source.updateDisabled = false;
       this.updateDisabled = false;
     }
+
     this.sendAction('itemWasMoved', entry, oldIndex, newIndex, sourceList);
   }
 });

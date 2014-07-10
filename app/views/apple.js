@@ -1,7 +1,7 @@
 import Ember from 'ember';
 
 export default Ember.View.extend({
-  classNames: ['foo', 'bar'],
+  classNames: ['inner-list-item'],
   didInsertElement: function() {
     console.log('apple#didInsertElement');
     this._super();
