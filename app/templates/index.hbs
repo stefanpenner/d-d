@@ -1,13 +1,35 @@
-{{#each}}
-  <span>{{id}} - {{name}}</span>
-{{/each}}
-<hr>
 {{length}}
-{{#draggable-each itemWasMoved="itemWasMoved" itemView="apple"}}
+<div style="height: 400px;">
+{{#draggable-each context=lista itemWasMoved="itemWasMoved" itemView="apple" connectWith=".ember-drag-list"}}
   <div class="draggable-item-handle">X</div>
   {{apple-pie name=name}}
   {{#pumpkin-pie}}
     PUMKIN PIE {{id}} : {{name}}
   {{/pumpkin-pie}}
 {{/draggable-each}}
+<hr />
+{{#draggable-each context=listb itemWasMoved="itemWasMoved" itemView="apple" connectWith=".ember-drag-list"}}
+  <div class="draggable-item-handle">X</div>
+  {{apple-pie name=name}}
+  {{#pumpkin-pie}}
+    PUMKIN PIE {{id}} : {{name}}
+  {{/pumpkin-pie}}
+{{/draggable-each}}
+</div>
+<div style="float: left;width: 300px;">
+<ul>
+  {{#each lista}}
+  <li>{{name}}</li>
+  {{/each}}
+</ul>
+</div>
+
+<div style="float: left;width: 300px;">
+ <ul>
+{{#each listb}}
+  <li>{{name}}</li>
+{{/each}}
+</ul> 
+</div>
+
 

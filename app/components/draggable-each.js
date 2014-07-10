@@ -6,19 +6,33 @@ function index(element, selector) {
   return element.parent().children(selector).index(element);
 }
 
-function applySortable(el, target, method, itemSelector, handleSelector) {
+function applySortable(el, target, method, itemSelector, handleSelector, connectWith) {
   if (el) {
     el.sortable({
       items: itemSelector,
       handle: handleSelector,
+      connectWith: connectWith,
+
       start: function(e, ui) {
         ui.item.data('dragon-drop-old-index', index(ui.item, itemSelector));
+        ui.item.__source__ = target;
       },
+
       update: function(e, ui) {
         var newIndex = index(ui.item, itemSelector);
         var oldIndex = ui.item.data('dragon-drop-old-index');
+        var source = ui.item.__source__;
 
-        Ember.run(target, method, oldIndex, newIndex);
+        if (ui.item.closest('.ember-drag-list').attr('id') === target.get('elementId')) {
+          Ember.run(target, method, oldIndex, newIndex, source);
+        }
+      },
+      receive: function (e, ui) {
+        var newIndex = index(ui.item, itemSelector);
+        var oldIndex = ui.item.data('dragon-drop-old-index');
+        var source = ui.item.__source__;
+
+        Ember.run(target, method, oldIndex, newIndex, source);
       }
     });
   }
@@ -59,7 +73,7 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
   },
 
   didInsertElement: function () {
-    applySortable(this.$(), this, 'itemWasDragged', this.get('itemSelector'), this.get('handleSelector'));
+    applySortable(this.$(), this, 'itemWasDragged', this.get('itemSelector'), this.get('handleSelector'), this.get('connectWith'));
   },
 
   willDestroyElement: function () {
@@ -86,15 +100,21 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
     });
   },
 
-  itemWasDragged: function (oldIndex, newIndex) {
-    var content = this.get('content');
+  itemWasDragged: function (oldIndex, newIndex, source) {
+    var sourceList = source.get('context');
+    var targetList = this.get('context');
 
     this.updateDisabled = true;
-    var object = content.objectAt(oldIndex);
+
+    var object = sourceList.objectAt(oldIndex);
+
     var entry = object.isController ? object.get('content') : object;
-    content.removeAt(oldIndex);
-    content.insertAt(newIndex, entry);
+
+    sourceList.removeAt(oldIndex);
+    targetList.insertAt(newIndex, entry);
+
     this.sendAction('itemWasMoved', entry, oldIndex, newIndex);
+
     this.updateDisabled = false;
   }
 });
