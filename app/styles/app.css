@@ -42,4 +42,5 @@ html, body {
   border: 1px dotted gray;
   border-radius: 5px;
   margin: 1em;
+  min-height: 100px;
 }
