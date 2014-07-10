@@ -16,7 +16,7 @@ html, body {
 
 .draggable-item {
   overflow: hidden;
-  height: 100px;
+  height: 150px;
   margin: 0.1em;
   background: #eee;
 }

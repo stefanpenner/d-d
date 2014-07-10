@@ -1,26 +1,30 @@
 {{length}}
-<div style="height: 400px;">
-{{#draggable-each context=lista itemWasMoved="itemWasMoved" itemView="apple" connectWith=".ember-drag-list"}}
-  <div class="draggable-item-handle">X</div>
-  {{apple-pie name=name}}
-  parentView: {{view.parentView.elementId}}
-  {{#pumpkin-pie}}
-  {{id}} : {{name}} – parentView: {{view.parentView.elementId}}
-  {{/pumpkin-pie}}
-{{/draggable-each}}
-<hr />
-
-{{#draggable-each context=listb itemWasMoved="itemWasMoved" itemView="apple" connectWith=".ember-drag-list"}}
-  <div class="draggable-item-handle">X</div>
-  {{apple-pie name=name}}
-  parentView: {{view.parentView.elementId}}
-  {{#pumpkin-pie}}
-  {{id}} : {{name}} – parentView: {{view.parentView.elementId}}
-  {{/pumpkin-pie}}
-{{/draggable-each}}
+<div style="width: 800px; overflow: hidden; float: left">
+  <div style="width: 400px; float:left;">
+  <h1>list 1</h1>
+  {{#draggable-each context=lista itemWasMoved="itemWasMoved" itemView="apple" connectWith=".ember-drag-list"}}
+    <div class="draggable-item-handle">X</div>
+    {{apple-pie name=name}}
+    parentView: {{view.parentView.elementId}}
+    {{#pumpkin-pie}}
+    {{id}} : {{name}} – parentView: {{view.parentView.elementId}}
+    {{/pumpkin-pie}}
+  {{/draggable-each}}
+  </div>
+  <div style="width: 400px; float:left;">
+  <h1>list 2</h1>
+  {{#draggable-each context=listb itemWasMoved="itemWasMoved" itemView="apple" connectWith=".ember-drag-list"}}
+    <div class="draggable-item-handle">X</div>
+    {{apple-pie name=name}}
+    parentView: {{view.parentView.elementId}}
+    {{#pumpkin-pie}}
+    {{id}} : {{name}} – parentView: {{view.parentView.elementId}}
+    {{/pumpkin-pie}}
+  {{/draggable-each}}
+  </div>
 </div>
-
 <div style="float: left;width: 300px;">
+  <h1> list 1</h1>
 <ul>
   {{#each lista}}
   <li>{{name}}</li>
@@ -29,6 +33,7 @@
 </div>
 
 <div style="float: left;width: 300px;">
+  <h1> list 2</h1>
  <ul>
 {{#each listb}}
   <li>{{name}}</li>
