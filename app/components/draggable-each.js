@@ -30,12 +30,10 @@ function applySortable(el, target, method, itemSelector, handleSelector, connect
         }
       },
       receive: function (e, ui) {
-        var newIndex = index(ui.item, itemSelector);
-        var oldIndex = ui.item.data('dragon-drop-old-index');
         var source = ui.item.__source__;
 
         Ember.run(function() {
-          target.viewRecieved(Ember.View.views[ui.item.attr('id')], source);
+          target.viewReceived(Ember.View.views[ui.item.attr('id')], source);
         });
       }
     });
@@ -104,7 +102,7 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
     });
   },
 
-  viewRecieved: function(view, source) {
+  viewReceived: function(view /*, source */) {
     view.set('parentView', this);
   },
 
@@ -124,21 +122,21 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
 
     this.updateDisabled = true;
 
-    var object = sourceList.objectAt(oldIndex);
+    try {
+      var object = sourceList.objectAt(oldIndex);
+      var entry = object.isController ? object.get('content') : object;
+      var view = source._childViews.splice(oldIndex, 1)[0];
 
-    var entry = object.isController ? object.get('content') : object;
+      this._childViews.splice(newIndex, 0,  view);
 
-    var view = source._childViews.splice(oldIndex, 1)[0];
+      source.updateDisabled = true;
 
-    this._childViews.splice(newIndex, 0,  view);
-
-    source.updateDisabled = true;
-    sourceList.removeAt(oldIndex);
-    targetList.insertAt(newIndex, entry);
-    source.updateDisabled = false;
-
+      sourceList.removeAt(oldIndex);
+      targetList.insertAt(newIndex, entry);
+    } finally {
+      source.updateDisabled = false;
+      this.updateDisabled = false;
+    }
     this.sendAction('itemWasMoved', entry, oldIndex, newIndex, sourceList);
-
-    this.updateDisabled = false;
   }
 });
