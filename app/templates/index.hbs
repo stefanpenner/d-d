@@ -1,29 +1,41 @@
 <div style="width: 800px; overflow: hidden; float: left">
-  outerView id: {{view.elementId}}
+  view: {{view.elementId}}
+  {{view.childViews.length}} <br> {{view.childViews}}
+
+  {{#view Ember.View}}
+    nested view: {{view.elementId}}
+    nested {{view.childViews.length}}<br>{{view.childViews}}
+  {{#view Ember.View}}1{{/view}}
+
   {{#draggable-each context=lists}}
-    <div style="width: 300px; float:left;">
-    <h1>List {{id}}</h1>
-    {{view.childViews.firstObject.childViews}}
-    {{#draggable-each context=list handleSelector=".draggable-item-handle" itemWasMoved="itemWasMoved" itemView="apple" connectWith=".ember-drag-list"}}
-      <div class="draggable-item-handle">X</div>
-      view: {{view.elementId}}
-      {{apple-pie name=name}}
-      parentView: {{view.parentView.elementId}}
-      {{#pumpkin-pie}}
-      {{id}} : {{name}} – parentView: {{view.parentView.elementId}}
-      {{/pumpkin-pie}}
-    {{/draggable-each}}
+    view.elementId:{{view.elementId}} (X)
+    {{view.childViews.length}} <br>{{view.childViews}}
+    <hr>
+    {{#view Ember.View}}
+      <div style="width: 300px; float:left;">
+      <h1>List {{id}}</h1>
+      view:{{view.elementId}}
+      {{view.childViews.length}} <br>{{view.childViews}}
+
+      {{#draggable-each context=list handleSelector=".draggable-item-handle" itemWasMoved="itemWasMoved" itemView="apple" connectWith=".ember-drag-list"}}
+        <div class="draggable-item-handle">X</div>
+        view.elementId:{{view.elementId}} (X)
+        {{apple-pie name=name}}
+        parentView: {{view.parentView.elementId}}
+        {{#pumpkin-pie}}
+        {{id}} : {{name}} – parentView: {{view.parentView.elementId}}
+        {{/pumpkin-pie}}
+      {{/draggable-each}}
+    {{/view}}
     </div>
   {{/draggable-each}}
+  {{/view}}
 </div>
+{{#view Ember.View}}
+  viewId: {{view.elementId}}
+  {{view.childViews.length}} <br> {{view.childViews}}
+  {{#draggable-each context=otherList handleSelector=".draggable-item-handle" itemWasMoved="itemWasMoved" itemView="apple" connectWith=".ember-drag-list"}}
+  {{/draggable-each}}
+{{/view}}
 
-{{#each lists}}
-<div style="float: left;width: 300px;">
-  <h1>list {{id}}</h1>
-  <ul>
-    {{#each list}}
-      <li>{{name}}</li>
-    {{/each}}
-  </ul>
-</div>
-{{/each}}
+

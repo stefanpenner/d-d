@@ -25,6 +25,7 @@ function applySortable(el, target, method, itemSelector, handleSelector, connect
           });
         }
       },
+
       receive: function (e, ui) {
         var source = ui.item.__source__;
 
@@ -52,11 +53,13 @@ function destroySortable(element) {
 var get = Ember.get;
 
 export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
+  isVirtual: true,
   classNames: ['ember-drag-list'],
   content: Ember.computed.oneWay('context'),
   handleSelector: null,
   itemSelector: '.draggable-item',
   target: Ember.computed.oneWay('controller'),
+
   init: function() {
     var itemView = this.get('itemView');
     var ItemViewClass;
@@ -68,19 +71,47 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
     }
 
     this.set('itemViewClass', ItemViewClass.extend({
+      cloneKeywords: function () {
+        var templateData = get(this, 'templateData');
+
+        var keywords = templateData ? Ember.copy(templateData.keywords) : {};
+
+        Ember.set(keywords, 'view', this._clonedKeywords$view = this._clonedKeywords$view || Ember.ObjectProxy.create({
+          content: this._keywords$view = (this.isVirtual ? keywords.view : this)
+        }));
+
+        Ember.set(keywords, '_view', this);
+        Ember.set(keywords, 'controller', this._clonedKeywords$controller = this._clonedKeywords$controller || Ember.ObjectProxy.create({
+          content: get(this, 'controller')
+        }));
+
+        return keywords;
+      },
+      isVirtual: true,
       context: Ember.computed.oneWay('content'),
       template: this.get('template'),
-      classNames: ['draggable-item']
+      classNames: ['draggable-item'],
+      didInsertElement: function () {
+        // hack to support eventDispatcher
+        Ember.View.views[this.get('elementId')] = this;
+      },
+
+      willDestroyElement: function () {
+        // hack to support eventDispatcher
+        delete Ember.View.views[this.get('elementId')];
+      }
     }));
 
     this._super.apply(this, arguments);
   },
 
   didInsertElement: function () {
+    Ember.View.views[this.get('elementId')] = this;
     applySortable(this.$(), this, 'itemWasDragged', this.get('itemSelector'), this.get('handleSelector'), this.get('connectWith'));
   },
 
   willDestroyElement: function () {
+    delete Ember.View.views[this.get('elementId')];
     destroySortable(this.$());
   },
   // lifted from Ember.Compontent
@@ -105,7 +136,10 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
   },
 
   viewReceived: function(view /*, source */) {
-    view.set('parentView', this);
+    view.set('parentView', this.get('parentView'));
+
+    view._clonedKeywords$view.set('content', this.templateData.keywords.view);
+    view._clonedKeywords$controller.set('content', this.templateData.keywords.controller);
   },
 
   arrayWillChange: function() {
@@ -117,7 +151,13 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
     if (this.updateDisabled) { return ;}
     this._super.apply(this, arguments);
   },
-
+  // - [x] ensure childViews is invalidated
+  // - [x] nonVirtualChildViews (may be fixed by isVirtal)
+  // - [ ] insertItem hook
+  // - [ ] removeItem hook
+  // - [x] "view" within children be from the outer scope (may be fixed by isVirtal)
+  // - [x] keywords from outercontext should change when moved between trees (may be fixed by isVirtal)
+  // - [ ] make eventDispatcher not block the move event stuff (caused by virtual)
   itemWasDragged: function (oldIndex, newIndex, source) {
     var sourceList = source.get('context');
     var targetList = this.get('context');
