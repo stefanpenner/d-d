@@ -1,9 +1,12 @@
 <div style="width: 800px; overflow: hidden; float: left">
+  outerView id: {{view.elementId}}
   {{#draggable-each context=lists}}
     <div style="width: 300px; float:left;">
     <h1>List {{id}}</h1>
+    {{view.childViews.firstObject.childViews}}
     {{#draggable-each context=list handleSelector=".draggable-item-handle" itemWasMoved="itemWasMoved" itemView="apple" connectWith=".ember-drag-list"}}
       <div class="draggable-item-handle">X</div>
+      view: {{view.elementId}}
       {{apple-pie name=name}}
       parentView: {{view.parentView.elementId}}
       {{#pumpkin-pie}}

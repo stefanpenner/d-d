@@ -135,6 +135,9 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
 
       sourceList.removeAt(oldIndex);
       targetList.insertAt(newIndex, entry);
+
+      Ember.propertyDidChange(source, 'childViews');
+      Ember.propertyDidChange(this, 'childViews');
     } finally {
       source.updateDisabled = false;
       this.updateDisabled = false;
