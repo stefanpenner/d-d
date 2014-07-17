@@ -166,6 +166,17 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
   // - [x] "view" within children be from the outer scope (may be fixed by isVirtal)
   // - [x] keywords from outercontext should change when moved between trees (may be fixed by isVirtal)
   // - [ ] make eventDispatcher not block the move event stuff (caused by virtual)
+
+  execWithoutRerender: function (func, context) {
+    this.updateDisabled = true;
+
+    try {
+      return func.call(context);
+    } finally {
+      this.updateDisabled = false;
+    }
+  },
+
   itemWasDragged: function (oldIndex, newIndex, source) {
     var sourceList = source.get('context');
     var targetList = this.get('context');
@@ -176,20 +187,19 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
     var entry = object.isController ? object.get('content') : object;
     var view = source._childViews.splice(oldIndex, 1)[0];
 
-    try {
-      this._childViews.splice(newIndex, 0,  view);
+    this.execWithoutRerender(function(){
+      source.execWithoutRerender(function() {
+        this._childViews.splice(newIndex, 0,  view);
 
-      source.updateDisabled = true;
+        source.updateDisabled = true;
 
-      sourceList.removeAt(oldIndex);
-      targetList.insertAt(newIndex, entry);
+        sourceList.removeAt(oldIndex);
+        targetList.insertAt(newIndex, entry);
 
-      Ember.propertyDidChange(source, 'childViews');
-      Ember.propertyDidChange(this, 'childViews');
-    } finally {
-      source.updateDisabled = false;
-      this.updateDisabled = false;
-    }
+        Ember.propertyDidChange(source, 'childViews');
+        Ember.propertyDidChange(this, 'childViews');
+      }, this);
+    }, this);
 
     this.sendAction('itemWasMoved', entry, oldIndex, newIndex, sourceList);
   }
