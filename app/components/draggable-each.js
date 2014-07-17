@@ -64,6 +64,8 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
     var itemView = this.get('itemView');
     var ItemViewClass;
 
+    this._updateDisabled = 0;
+
     if (itemView) {
       ItemViewClass = this.container.lookupFactory('view:' + itemView);
     } else {
@@ -151,12 +153,12 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
   },
 
   arrayWillChange: function() {
-    if (this.updateDisabled) { return ;}
+    if (this._updateDisabled > 0) { return ;}
     this._super.apply(this, arguments);
   },
 
   arrayDidChange: function() {
-    if (this.updateDisabled) { return ;}
+    if (this._updateDisabled > 0) { return ;}
     this._super.apply(this, arguments);
   },
   // - [x] ensure childViews is invalidated
@@ -168,20 +170,18 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
   // - [ ] make eventDispatcher not block the move event stuff (caused by virtual)
 
   execWithoutRerender: function (func, context) {
-    this.updateDisabled = true;
+    this._updateDisabled++;
 
     try {
       return func.call(context);
     } finally {
-      this.updateDisabled = false;
+      this._updateDisabled--;
     }
   },
 
   itemWasDragged: function (oldIndex, newIndex, source) {
     var sourceList = source.get('context');
     var targetList = this.get('context');
-
-    this.updateDisabled = true;
 
     var object = sourceList.objectAt(oldIndex);
     var entry = object.isController ? object.get('content') : object;
@@ -190,8 +190,6 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
     this.execWithoutRerender(function(){
       source.execWithoutRerender(function() {
         this._childViews.splice(newIndex, 0,  view);
-
-        source.updateDisabled = true;
 
         sourceList.removeAt(oldIndex);
         targetList.insertAt(newIndex, entry);
