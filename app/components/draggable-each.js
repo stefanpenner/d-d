@@ -76,14 +76,21 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
 
         var keywords = templateData ? Ember.copy(templateData.keywords) : {};
 
-        Ember.set(keywords, 'view', this._clonedKeywords$view = this._clonedKeywords$view || Ember.ObjectProxy.create({
-          content: this._keywords$view = (this.isVirtual ? keywords.view : this)
-        }));
+        this._clonedKeywords$ = this._clonedKeywords$ || {
+          view: Ember.ObjectProxy.create({
+            content: this._keywords$view = (this.isVirtual ? keywords.view : this)
+          }),
+          controller: Ember.ObjectProxy.create({
+            content: this.get('controller')
+          }),
+          _view: Ember.ObjectProxy.create({
+            content: this
+          })
+        };
 
-        Ember.set(keywords, '_view', this);
-        Ember.set(keywords, 'controller', this._clonedKeywords$controller = this._clonedKeywords$controller || Ember.ObjectProxy.create({
-          content: get(this, 'controller')
-        }));
+        Ember.set(keywords, 'view', this._clonedKeywords$.view);
+        Ember.set(keywords, '_view', this._clonedKeywords$._view);
+        Ember.set(keywords, 'controller', this._clonedKeywords$.controller);
 
         return keywords;
       },
@@ -138,8 +145,9 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
   viewReceived: function(view /*, source */) {
     view.set('parentView', this.get('parentView'));
 
-    view._clonedKeywords$view.set('content', this.templateData.keywords.view);
-    view._clonedKeywords$controller.set('content', this.templateData.keywords.controller);
+    view._clonedKeywords$.view.set('content', this.templateData.keywords.view);
+    view._clonedKeywords$.controller.set('content', this.templateData.keywords.controller);
+    view._clonedKeywords$._view.set('content', this);
   },
 
   arrayWillChange: function() {
