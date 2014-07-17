@@ -99,12 +99,12 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
       template: this.get('template'),
       classNames: ['draggable-item'],
       didInsertElement: function () {
-        // hack to support eventDispatcher
+        // hack to allow eventPropogation on virtualViews: https://github.com/emberjs/ember.js/pull/5179
         Ember.View.views[this.get('elementId')] = this;
       },
 
       willDestroyElement: function () {
-        // hack to support eventDispatcher
+        // hack to allow eventPropogation on virtualViews: https://github.com/emberjs/ember.js/pull/5179
         delete Ember.View.views[this.get('elementId')];
       }
     }));
