@@ -144,7 +144,7 @@ export default Ember.CollectionView.extend(Ember.TargetActionSupport, {
 
   viewReceived: function(view /*, source */) {
     view.set('parentView', this.get('parentView'));
-
+    view._parentView = this;
     view._clonedKeywords$.view.set('content', this.templateData.keywords.view);
     view._clonedKeywords$.controller.set('content', this.templateData.keywords.controller);
     view._clonedKeywords$._view.set('content', this);
